@@ -1,18 +1,14 @@
-# how to play instructions
-# enter a word to guess (from a list of words in a file -> randomised)
-# display _ for all letters
-# enter letters and if you get it wrong update incorrect counter
-# if you get it right update the letters _ and display counter
-# if incorrect counter hits 10 then system failure, displays the word
-
 # Enhancements
 # When entering character
 #    Don't allow same letter more than once
 #    Don't allow symbols or white spaces
 # Allow multiple words
+
 import glob
 import re
 from random import randrange
+
+MAX_WRONG_ATTEMPTS = 10
 
 filenames = glob.glob("words/*.txt")
 
@@ -57,7 +53,7 @@ while(not gameComplete):
         print("Fantastic mr fox")
         gameComplete = True
 
-    if incorrectCounter >=10:
+    if incorrectCounter >= MAX_WRONG_ATTEMPTS:
         print(f"Shot by Boggis/Bunce and Bean. Word was: {wordToGuess}")
         gameComplete = True
 
