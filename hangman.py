@@ -1,14 +1,15 @@
 # Enhancements
 # When entering character
-#    Don't allow same letter more than once
-#    Don't allow symbols or white spaces
-# Allow multiple words
+#    Don't allow same letter more than once - DONE
+#    Don't allow symbols or white spaces - DONE
+# Allow multiple words - DONE
 
 import glob
 import re
 from random import randrange
 
 MAX_WRONG_ATTEMPTS = 10
+LETTERS_REGEX = re.compile('[A-Z]')
 
 filenames = glob.glob("words/*.txt")
 
@@ -26,20 +27,27 @@ randomElement = randrange(len(data))
 gameComplete = False
 incorrectCounter = 0
 wordToGuess = data[randomElement].upper().strip()
+attemptedCharacters=[]
 
-currentWord = ""
-for x in range(0, len(wordToGuess)):
-    currentWord += "_"
+currentWord = LETTERS_REGEX.sub("_", wordToGuess)
 
 while(not gameComplete):
     print(f"Incorrect count: {incorrectCounter}")
     print(currentWord)
 
     letterToGuess = ""
-    while not letterToGuess.isalpha():
-        letterToGuess = input("Enter letter to guess: ")
+    validLetter = False
+    while not validLetter:
+        letterToGuess = input("Enter letter to guess [A-Z]: ")
+        if letterToGuess.isalpha():
+            letterToGuess = letterToGuess[0].upper()
+            if letterToGuess in attemptedCharacters:
+                print("Letter already attempted!")
+            else:
+                validLetter = True
 
-    letterToGuess = letterToGuess[0].upper()
+    attemptedCharacters.append(letterToGuess)
+
     found = wordToGuess.find(letterToGuess)
     if found == -1 :
         incorrectCounter+=1
@@ -57,3 +65,13 @@ while(not gameComplete):
         print(f"Shot by Boggis/Bunce and Bean. Word was: {wordToGuess}")
         gameComplete = True
 
+# url = f"https://wordsapiv1.p.rapidapi.com/words/{wordToGuess}"
+#
+# headers = {
+#     'x-rapidapi-key': f"{WORD_API_KEY}",
+#     'x-rapidapi-host': "wordsapiv1.p.rapidapi.com"
+# }
+#
+# response = requests.request("GET", url, headers=headers)
+#
+# print(response.text)
